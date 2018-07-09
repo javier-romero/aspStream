@@ -1,61 +1,52 @@
-#script (python)
 import clingo
-import sys
 
-window = """
-time(0..2).
-input(a(1..2)).
-#external holds(X,T) : input(X), time(T).
-#show holds/2.
-"""
+# domain specific
+
+window_size = 3
 
 base = """
+input(a(1..2)).
 all(T) :- time(T), holds(X,T) : input(X).
-#show all/1.
+#show holds/2. #show all/1.
 """
 
-def _on_model(m):
-    print "Answer:\n{}".format(" ".join([str(i) for i in m.symbols(shown=True)]))
+stream = [
+    [("a(1)", True), ("a(2)", False)],
+    [("a(1)", True), ("a(2)",  True)],
+    [("a(1)",False), ("a(2)", False)],
+    [("a(1)", True), ("a(2)",  True)]
+]
 
-def set_externals(ctl, stream):
-    for idx, item in enumerate(stream):
-        for x, value in item:
-            ctl.assign_external(clingo.parse_term("holds("+x+","+str(idx)+")"), value)
+# domain independent
+
+window_program = """
+time(1-window_size..0).
+#external holds(X,T) : input(X), time(T).
+"""
+
+def on_model(m):
+    show = " ".join([str(i) for i in m.symbols(shown=True)])
+    print("Answer:\n{}".format(show))
+
+def set_externals(ctl, window):
+    for idx, item in enumerate(window):
+        for atom, value in item:
+            clingo_atom = clingo.parse_term("holds("+atom+",-"+str(idx)+")")
+            ctl.assign_external(clingo_atom, value)
 
 def main():
 
-    ctl = clingo.Control()
-    ctl.add("base",[],base + window)
+    # preliminaries
+    ctl = clingo.Control(["-c window_size={}".format(window_size)])
+    ctl.add("base",[],base + window_program)
     ctl.ground([("base",[])])
 
-    # first iteration
-    stream = [
-        [("a(1)",True), ("a(2)", False)],
-        [],
-        []
-    ]
-    set_externals(ctl, stream)
-    ctl.solve(on_model=_on_model)
-
-    # next iteration
-    new = [("a(1)",False), ("a(2)", True)]
-    stream = [new] + stream[0:-1]
-    set_externals(ctl, stream)
-    ctl.solve(on_model=_on_model)
-
-    # next iteration
-    new = [("a(1)",True), ("a(2)", True)]
-    stream = [new] + stream[0:-1]
-    set_externals(ctl, stream)
-    ctl.solve(on_model=_on_model)
-
-    # next iteration
-    new = [("a(1)",False), ("a(2)", False)]
-    stream = [new] + stream[0:-1]
-    set_externals(ctl, stream)
-    ctl.solve(on_model=_on_model)
-
-    # next ...
+    # solve until end of the stream
+    window = [[]]*window_size
+    for item in stream:
+        window = [item] + window[:-1]
+        set_externals(ctl, window)
+        ctl.solve(on_model=on_model)
 
 if __name__ == '__main__':
     main()
