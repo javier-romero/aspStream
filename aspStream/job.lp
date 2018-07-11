@@ -13,5 +13,5 @@ occupies(J,M,D-1,T) :- occupies( J,M,D,T-1), D> 1.
 % J1 occupies M at T and J2 (with J1<J2) also occupies M at T
 :- occupies(J1,M,_,T), occupies(J2,M,_,T), J1<J2.
 
-% show starting times
-% #show start/2.
+% display
+#show start/2.
