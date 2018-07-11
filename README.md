@@ -1,5 +1,5 @@
 # aspStream
-A simple approach to stream reasoning in clingo.
+A simple approach to stream reasoning in clingo
 
 # Files
 * README.md: This file
