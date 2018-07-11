@@ -16,6 +16,6 @@
 :- window(done(R,WT),0), assign((R,WT),_).
 
 % new window terms definition
-wterm(occupied(M,T)) :-   M=1..machines, T=1..horizon.
+wterm(occupied(M,T)) :- M=1..machines, T=1..horizon.
 wterm(   done(R,WT)) :- R=1..requests, WT=1-wsize..-1.
 
