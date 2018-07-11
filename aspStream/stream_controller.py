@@ -41,12 +41,21 @@ def main(sp):
         window = [item] + window[:-1]
         set_externals(ctl, window)
         print("Solving...")
-        #print(window)
         ctl.solve(on_model=on_model)
         item = sp.next()
 
 if __name__ == '__main__':
     # choose one
-    #main(streamed_program_basic.StreamedProgramBasic())
-    #main(streamed_program_job.StreamedProgramJob())
-    main(streamed_program_job.StreamedProgramJob(True))
+    print("Basic\n*****")
+    main(streamed_program_basic.StreamedProgramBasic())
+    print("")
+    instances = []
+    instances.append(("examples/stream_instance1.lp", False))
+    instances.append(("examples/stream_instance2.lp", False))
+    instances.append(("examples/stream_instance1.lp",  True))
+    instances.append(("examples/stream_instance2.lp",  True))
+    instances.append(("examples/stream_instance3.lp",  True))
+    stars = "*"*60
+    for instance, extended in instances:
+        print("\nInstance = {}\tExtended = {}\n{}".format(instance, extended, stars))
+        main(streamed_program_job.StreamedProgramJob(instance, extended))
