@@ -24,7 +24,7 @@ class StreamedProgramJob:
 
         # read instance
         with open(instance) as f:
-            self.data = [line[:-1].split() for line in f]
+            self.data = [line[:-1].split() for line in f if line[0] != "%"]
 
         # define externals
         self.externals = []
@@ -40,7 +40,7 @@ class StreamedProgramJob:
         # define more externals if extended
         for r in range(1, self.requests+1):
             for t in range(1-self.wsize, 0):
-                self.externals.append("done({},{})".format(r,t))
+                self.externals.append("submitted({},{})".format(r,t))
         for m in range(1, self.machines+1):
             for t in range(1, self.horizon+1):
                 self.externals.append("occupied({},{})".format(m,t))

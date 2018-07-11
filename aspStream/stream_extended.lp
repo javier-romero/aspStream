@@ -11,11 +11,11 @@
 % then M cannot be occupied at T
 :- window(occupied(M,T),0), occupies(_,M,_,T).
 
-% if done(R,WT) appears in the newest position of the stream (0),
+% if submitted(R,WT) appears in the newest position of the stream (0),
 % then request R at WT cannot be assigned
-:- window(done(R,WT),0), assign((R,WT),_).
+:- window(submitted(R,WT),0), assign((R,WT),_).
 
 % new window terms definition
-wterm(occupied(M,T)) :- M=1..machines, T=1..horizon.
-wterm(   done(R,WT)) :- R=1..requests, WT=1-wsize..-1.
+wterm(  occupied(M,T)) :- M=1..machines, T=1..horizon.
+wterm(submitted(R,WT)) :- R=1..requests, WT=1-wsize..-1.
 
