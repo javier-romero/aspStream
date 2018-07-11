@@ -1,3 +1,6 @@
+% constants
+#const horizon = 4.
+
 % for each job J with duration D, choose one starting point T
 { start(J,T) : T=1..horizon+1-D } = 1 :- job(J,_,D).
 
@@ -14,4 +17,5 @@ occupies(J,M,D-1,T) :- occupies( J,M,D,T-1), D> 1.
 :- occupies(J1,M,_,T), occupies(J2,M,_,T), J1<J2.
 
 % display
-#show start/2.
+#show.
+%#show start/2.
